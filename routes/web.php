@@ -40,10 +40,10 @@ Route::post('/pedido/{numero}/comprobante', [CheckoutController::class, 'subirCo
 
 /*
 |--------------------------------------------------------------------------
-| Panel Administrativo de la Tienda
+| Panel Administrativo de la Tienda (Requiere Autenticación)
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     
     // Gestión de Productos, Carga Masiva y Stock Kardex

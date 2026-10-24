@@ -212,6 +212,12 @@
                     <i class="fa-solid fa-plus"></i> Nueva Tienda
                 </a>
                 <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-circle-user"></i> {{ auth()->user()->name ?? 'Administrador' }}</span>
+                <form action="{{ route('cliente.logout') }}" method="POST" style="margin: 0;">
+                    @csrf
+                    <button type="submit" style="background: none; border: 1px solid #E2E8F0; padding: 0.35rem 0.65rem; border-radius: 0.35rem; color: #64748B; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;" title="Cerrar Sesión">
+                        <i class="fa-solid fa-right-from-bracket"></i> Salir
+                    </button>
+                </form>
             </div>
         </header>
 

@@ -42,6 +42,10 @@ class AdminTiendaController extends Controller
     public function index()
     {
         $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('cliente.login')->with('error', 'Por favor inicia sesión para gestionar tus tiendas.');
+        }
+
         $tiendas = $user->tiendas()->withCount(['productos', 'pedidos'])->get();
 
         return view('admin.tiendas.index', compact('tiendas'));

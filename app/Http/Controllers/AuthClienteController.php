@@ -33,6 +33,12 @@ class AuthClienteController extends Controller
 
         if (Auth::attempt($credenciales, $request->boolean('remember'))) {
             $request->session()->regenerate();
+            $user = Auth::user();
+
+            if (in_array($user->role, ['admin', 'administrador', 'superadmin'])) {
+                return redirect()->intended(route('admin.dashboard'))->with('success', '¡Bienvenido al Panel Administrativo!');
+            }
+
             return redirect()->intended(route('cliente.perfil'))->with('success', '¡Bienvenido de nuevo!');
         }
 
