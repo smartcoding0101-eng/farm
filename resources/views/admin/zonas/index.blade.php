@@ -14,48 +14,69 @@
         </a>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Zona / Cobertura</th>
-                <th>Departamento</th>
-                <th>Costo de Envío</th>
-                <th>Envío Gratis Desde</th>
-                <th>Tiempo Estimado</th>
-                <th>Estado</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($zonas as $z)
+    <div class="table-responsive">
+        <table>
+            <thead>
                 <tr>
-                    <td style="font-weight: 700;">{{ $z->nombre }}</td>
-                    <td>{{ $z->departamento }}</td>
-                    <td style="font-weight: 800; color: #0F172A;">Bs. {{ number_format($z->costo_envio, 2) }}</td>
-                    <td>
-                        @if($z->monto_minimo_envio_gratis)
-                            <span style="color: #059669; font-weight: 700;">Bs. {{ number_format($z->monto_minimo_envio_gratis, 2) }}</span>
-                        @else
-                            <span style="color: #94A3B8;">Sin envío gratis</span>
-                        @endif
-                    </td>
-                    <td>{{ $z->tiempo_estimado }}</td>
-                    <td>
-                        @if($z->activo)
-                            <span style="color: #059669; font-weight: 600; font-size: 0.8rem;"><i class="fa-solid fa-check"></i> Activa</span>
-                        @else
-                            <span style="color: #EF4444; font-weight: 600; font-size: 0.8rem;">Inactiva</span>
-                        @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('admin.zonas.edit', $z->id) }}" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.85rem;">
-                            <i class="fa-solid fa-pen"></i> Editar
-                        </a>
-                    </td>
+                    <th>Zona / Cobertura</th>
+                    <th>Departamento</th>
+                    <th>Costo de Envío</th>
+                    <th>Envío Gratis Desde</th>
+                    <th>Tiempo Estimado</th>
+                    <th>Estado</th>
+                    <th style="text-align: right;">Acciones</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse($zonas as $z)
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                <div style="width: 34px; height: 34px; border-radius: var(--radius-sm); background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-map-location-dot"></i>
+                                </div>
+                                <span style="font-weight: 700; color: #0F2414; font-size: 0.92rem;">{{ $z->nombre }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge badge-neutral"><i class="fa-solid fa-location-dot"></i> {{ $z->departamento }}</span>
+                        </td>
+                        <td>
+                            <span style="font-weight: 900; color: #0F172A; font-size: 0.95rem;">Bs. {{ number_format($z->costo_envio, 2) }}</span>
+                        </td>
+                        <td>
+                            @if($z->monto_minimo_envio_gratis)
+                                <span class="badge badge-success"><i class="fa-solid fa-gift"></i> Desde Bs. {{ number_format($z->monto_minimo_envio_gratis, 2) }}</span>
+                            @else
+                                <span style="color: #94A3B8; font-size: 0.8rem;">Sin envío gratis</span>
+                            @endif
+                        </td>
+                        <td>
+                            <span style="font-size: 0.84rem; color: #475569;"><i class="fa-solid fa-clock" style="color: #94A3B8;"></i> {{ $z->tiempo_estimado }}</span>
+                        </td>
+                        <td>
+                            @if($z->activo)
+                                <span class="badge badge-success"><i class="fa-solid fa-check"></i> Activa</span>
+                            @else
+                                <span class="badge badge-danger">Inactiva</span>
+                            @endif
+                        </td>
+                        <td style="text-align: right;">
+                            <a href="{{ route('admin.zonas.edit', $z->id) }}" class="btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+                            No hay zonas de envío configuradas.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     <div style="margin-top: 1.5rem;">
         {{ $zonas->links() }}

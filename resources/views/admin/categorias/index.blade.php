@@ -14,50 +14,80 @@
         </a>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Categoría</th>
-                <th>Slug</th>
-                <th>Categoría Padre</th>
-                <th>Total Productos</th>
-                <th>Orden</th>
-                <th>Destacada</th>
-                <th>Estado</th>
-                <th>Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($categorias as $c)
+    <div class="table-responsive">
+        <table>
+            <thead>
                 <tr>
-                    <td style="font-weight: 700;">{{ $c->nombre }}</td>
-                    <td><code>{{ $c->slug }}</code></td>
-                    <td>{{ $c->padre->nombre ?? 'Principal' }}</td>
-                    <td><span style="font-weight: 700; color: var(--primary);">{{ $c->productos_count }}</span></td>
-                    <td>{{ $c->orden }}</td>
-                    <td>
-                        @if($c->destacada)
-                            <span style="color: #D97706; font-size: 0.8rem; font-weight: 600;"><i class="fa-solid fa-star"></i> Sí</span>
-                        @else
-                            <span style="color: #94A3B8; font-size: 0.8rem;">No</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($c->activo)
-                            <span style="color: #059669; font-weight: 600; font-size: 0.8rem;"><i class="fa-solid fa-check"></i> Activa</span>
-                        @else
-                            <span style="color: #EF4444; font-weight: 600; font-size: 0.8rem;">Inactiva</span>
-                        @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('admin.categorias.edit', $c->id) }}" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.85rem;">
-                            <i class="fa-solid fa-pen"></i> Editar
-                        </a>
-                    </td>
+                    <th>Categoría / Rubro</th>
+                    <th>Slug</th>
+                    <th>Jerarquía</th>
+                    <th>Productos</th>
+                    <th>Orden</th>
+                    <th>Destacada</th>
+                    <th>Estado</th>
+                    <th style="text-align: right;">Acciones</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse($categorias as $c)
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.65rem;">
+                                <div style="width: 34px; height: 34px; border-radius: var(--radius-sm); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+                                    <i class="fa-solid fa-{{ $c->icono ?? 'tag' }}"></i>
+                                </div>
+                                <div>
+                                    <span style="font-weight: 700; color: #0F2414; font-size: 0.92rem; display: block;">{{ $c->nombre }}</span>
+                                    @if($c->descripcion)
+                                        <span style="font-size: 0.76rem; color: var(--text-muted);">{{ Str::limit($c->descripcion, 40) }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </td>
+                        <td><code style="background: #F1F5F9; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.78rem;">{{ $c->slug }}</code></td>
+                        <td>
+                            @if($c->padre)
+                                <span class="badge badge-neutral"><i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i> {{ $c->padre->nombre }}</span>
+                            @else
+                                <span class="badge badge-info"><i class="fa-solid fa-folder"></i> Principal</span>
+                            @endif
+                        </td>
+                        <td>
+                            <span class="badge badge-neutral" style="font-weight: 800; font-size: 0.82rem;">
+                                {{ $c->productos_count }} ítems
+                            </span>
+                        </td>
+                        <td><span style="font-weight: 700; color: #64748B;">{{ $c->orden }}</span></td>
+                        <td>
+                            @if($c->destacada)
+                                <span class="badge badge-warning"><i class="fa-solid fa-star"></i> Destacada</span>
+                            @else
+                                <span style="color: #94A3B8; font-size: 0.8rem;">—</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($c->activo)
+                                <span class="badge badge-success"><i class="fa-solid fa-check"></i> Activa</span>
+                            @else
+                                <span class="badge badge-danger">Inactiva</span>
+                            @endif
+                        </td>
+                        <td style="text-align: right;">
+                            <a href="{{ route('admin.categorias.edit', $c->id) }}" class="btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+                            No existen categorías registradas.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     <div style="margin-top: 1.5rem;">
         {{ $categorias->links() }}

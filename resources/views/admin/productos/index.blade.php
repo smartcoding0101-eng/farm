@@ -43,54 +43,107 @@
         <button type="submit" class="btn-primary" style="padding: 0.6rem 1.25rem;">Buscar</button>
     </form>
 
-    <!-- Tabla de Productos -->
-    <table>
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>SKU</th>
-                <th>Categoría</th>
-                <th>Precio Venta</th>
-                <th>Stock Actual</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($productos as $prod)
+    <!-- Tabla de Productos Responsive -->
+    <div class="table-responsive">
+        <table>
+            <thead>
                 <tr>
-                    <td style="font-weight: 700;">
-                        {{ $prod->nombre }}
-                        @if($prod->destacado)
-                            <span style="color: #D97706; font-size: 0.75rem;"><i class="fa-solid fa-star"></i> Destacado</span>
-                        @endif
-                    </td>
-                    <td><code>{{ $prod->sku }}</code></td>
-                    <td>{{ $prod->categoria->nombre ?? 'Sin categoría' }}</td>
-                    <td style="font-weight: 800;">Bs. {{ number_format($prod->precio_venta, 2) }}</td>
-                    <td>
-                        @if($prod->stock_actual <= $prod->stock_minimo)
-                            <span style="background: #FEF2F2; color: #991B1B; padding: 0.2rem 0.5rem; border-radius: 0.35rem; font-weight: 700; font-size: 0.78rem;">
-                                {{ $prod->stock_actual }} (Bajo)
-                            </span>
-                        @else
-                            <span style="color: #059669; font-weight: 700;">{{ $prod->stock_actual }}</span>
-                        @endif
-                    </td>
-                    <td>
-                        <span style="text-transform: uppercase; font-size: 0.75rem; font-weight: 600; background: #F1F5F9; padding: 0.2rem 0.5rem; border-radius: 0.35rem;">
-                            {{ $prod->estado }}
-                        </span>
-                    </td>
-                    <td>
-                        <a href="{{ route('admin.productos.edit', $prod->id) }}" style="color: var(--primary); font-weight: 600; text-decoration: none; margin-right: 0.75rem;">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
-                        </a>
-                    </td>
+                    <th style="width: 70px;">Img</th>
+                    <th>Producto & Fórmula</th>
+                    <th>SKU</th>
+                    <th>Categoría</th>
+                    <th>Precio Venta</th>
+                    <th>Stock Actual</th>
+                    <th>Estado</th>
+                    <th style="text-align: right;">Acciones</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @forelse($productos as $prod)
+                    <tr>
+                        <td>
+                            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); overflow: hidden; background: #F1F5F9; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;">
+                                @if($prod->imagen_principal)
+                                    <img src="{{ $prod->imagen_principal }}" alt="{{ $prod->nombre }}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/images/farmaluz-logo.png'">
+                                @else
+                                    <i class="fa-solid fa-mortar-pestle" style="color: #94A3B8; font-size: 1.1rem;"></i>
+                                @endif
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <a href="{{ route('admin.productos.edit', $prod->id) }}" style="font-weight: 700; color: #0F2414; text-decoration: none; font-size: 0.92rem; display: block; line-height: 1.3;">
+                                    {{ $prod->nombre }}
+                                </a>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.25rem;">
+                                    @if($prod->destacado)
+                                        <span class="badge badge-warning" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">
+                                            <i class="fa-solid fa-star"></i> Destacado
+                                        </span>
+                                    @endif
+                                    @if($prod->nuevo)
+                                        <span class="badge badge-info" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">
+                                            Nuevo
+                                        </span>
+                                    @endif
+                                    @if($prod->precio_oferta)
+                                        <span class="badge badge-danger" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">
+                                            Oferta Bs. {{ number_format($prod->precio_oferta, 2) }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <code style="background: #F1F5F9; padding: 0.2rem 0.45rem; border-radius: 4px; font-size: 0.78rem; font-weight: 600; color: #475569;">{{ $prod->sku }}</code>
+                        </td>
+                        <td>
+                            <span style="font-weight: 600; color: #334155; font-size: 0.84rem;">
+                                {{ $prod->categoria->nombre ?? 'Sin rubro' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-weight: 900; color: #0F172A; font-size: 0.95rem;">
+                                Bs. {{ number_format($prod->precio_venta, 2) }}
+                            </div>
+                        </td>
+                        <td>
+                            @if($prod->stock_actual <= $prod->stock_minimo)
+                                <span class="badge badge-danger">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> {{ $prod->stock_actual }} (Bajo)
+                                </span>
+                            @else
+                                <span class="badge badge-success">
+                                    <i class="fa-solid fa-circle-check"></i> {{ $prod->stock_actual }} u.
+                                </span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($prod->estado === 'publicado')
+                                <span class="badge badge-success">Publicado</span>
+                            @elseif($prod->estado === 'borrador')
+                                <span class="badge badge-warning">Borrador</span>
+                            @else
+                                <span class="badge badge-neutral">Archivado</span>
+                            @endif
+                        </td>
+                        <td style="text-align: right;">
+                            <a href="{{ route('admin.productos.edit', $prod->id) }}" class="btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+                            <i class="fa-solid fa-box-open" style="font-size: 2.5rem; color: #CBD5E1; margin-bottom: 0.75rem; display: block;"></i>
+                            No se encontraron productos coincidentes con los filtros.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     <div style="margin-top: 1.5rem;">
         {{ $productos->links() }}
