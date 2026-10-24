@@ -18,6 +18,7 @@ Route::get('/producto/{slug}', [TiendaController::class, 'producto'])->name('tie
 Route::get('/rastreo', [App\Http\Controllers\AuthClienteController::class, 'rastreo'])->name('tienda.rastreo');
 
 // Autenticación de Clientes y Perfil
+Route::get('/login', [App\Http\Controllers\AuthClienteController::class, 'showLogin'])->name('login');
 Route::get('/cuenta/login', [App\Http\Controllers\AuthClienteController::class, 'showLogin'])->name('cliente.login');
 Route::post('/cuenta/login', [App\Http\Controllers\AuthClienteController::class, 'login'])->name('cliente.login.post');
 Route::post('/cuenta/registro', [App\Http\Controllers\AuthClienteController::class, 'register'])->name('cliente.register.post');
